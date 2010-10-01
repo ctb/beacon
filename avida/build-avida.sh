@@ -4,7 +4,7 @@ svn co https://avida.devosoft.org/svn/development avida
 
 cd avida
 cmake .
-make
+make -j 2
 
 cp bin/avida /usr/local/bin
 
