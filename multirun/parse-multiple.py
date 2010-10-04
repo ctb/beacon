@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 import sys
+import math
 
 # Create a dictionary to store fitness information per-run
 run_fitness = {}
@@ -40,6 +41,7 @@ for run_dir in sys.argv[1:]:
 
 # Next, for each update, for each run, average information across runs.
 fitness_by_update = {}
+stderr_by_update = {}
 
 # use the last 'info' as a source of information about updates:
 for update in info:
@@ -60,6 +62,19 @@ for update in info:
     # store average
     fitness_by_update[update] = average
 
+    dev = 0.0
+    for run_dir in run_fitness:
+        update_info = run_fitness[run_dir]
+        update_fitness = update_info[update]
+
+        dev = dev + (update_fitness - average)**2
+
+    dev = dev / float(n - 1)
+    dev = math.sqrt(dev)
+    dev = dev / math.sqrt(n)
+
+    stderr_by_update[update] = dev
+
 # finally, output!
 outfp = open('multiple-averages.txt', 'w')
 
@@ -69,5 +84,7 @@ updates.sort()
 
 for update in updates:
     average = fitness_by_update[update]
+    dev = stderr_by_update[update]
 
-    print >>outfp, update, average
+    print >>outfp, update, average, dev
+
