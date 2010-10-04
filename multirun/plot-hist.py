@@ -2,7 +2,7 @@ import sys
 
 # use plotting code
 import matplotlib
-matplotlib.use('GtkCairo')
+matplotlib.use('Cairo')
 from pylab import *
 
 # record the data in a list
@@ -22,13 +22,6 @@ hist(data, bins=100, log=True)
 
 # print default axes...
 print axis()
-
-# ...and fix if necessary
-#axis([-100000.0, 100000.0, 0.0, 4000.0])
-
-#yscale('log')
-
-show()
 
 print 'Saving figure dist.pdf'
 savefig('dist.pdf')

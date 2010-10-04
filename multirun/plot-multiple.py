@@ -23,8 +23,8 @@ def load_averages(filename):
 
 ## code to actually run
     
-updates_1, averages_1, stderr_1 = load_averages('multiple-a.txt')
-updates_2, averages_2, stderr_2 = load_averages('multiple-b.txt')
+updates_1, averages_1, stderr_1 = load_averages(sys.argv[1])
+updates_2, averages_2, stderr_2 = load_averages(sys.argv[2])
 
 print 'plotting'
 errorbar(updates_1, averages_1, stderr_1, fmt='r-')
