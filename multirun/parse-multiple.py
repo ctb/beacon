@@ -69,9 +69,12 @@ for update in info:
 
         dev = dev + (update_fitness - average)**2
 
-    dev = dev / float(n - 1)
-    dev = math.sqrt(dev)
-    dev = dev / math.sqrt(n)
+    if n > 1:
+       dev = dev / float(n - 1)
+       dev = math.sqrt(dev)
+       dev = dev / math.sqrt(n)
+    else:
+       dev = 0
 
     stderr_by_update[update] = dev
 

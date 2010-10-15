@@ -18,7 +18,8 @@ for filename in sys.argv[1:]:
         data.append(n)
 
 # now, plot a histogram for all the data
-hist(data, bins=100, log=True)
+hist(data, bins=100)
+#yscale('log')
 
 # print default axes...
 print axis()

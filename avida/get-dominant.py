@@ -29,5 +29,6 @@ for line in fp:
 
     organism = line.split()[0]
     if organism == dominant_genotype:
-        print line
+        genome = line.split()[15]
+        print genome
         break

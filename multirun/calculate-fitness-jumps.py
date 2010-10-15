@@ -42,14 +42,15 @@ outfp = open(outfile, 'w')
 
 # now, iterate over updates, and calculate & record fitness differences.
 i = 0
-while i < len(updates) - 1:
+WIDTH=10
+while i < len(updates) - WIDTH:
     # pick out the two updates
     update1 = updates[i]
-    update2 = updates[i + 1]
+    update2 = updates[i + WIDTH]
 
     # calculate the difference in fitness between the two updates
     diff = info[update2] - info[update1]
 
     print >>outfp, diff
 
-    i = i + 1
+    i = i + WIDTH
