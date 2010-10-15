@@ -11,5 +11,5 @@ cd ..
 # http://tldp.org/LDP/Bash-Beginners-Guide/html/chap_09.html
 while true;
 do
-   python /mnt/beacon/ltee/run-next.py . || break
+   python /root/beacon/ltee/run-next.py . || break
 done
