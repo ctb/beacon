@@ -1,10 +1,17 @@
-# run-next: run a serial transfer experiment, always transferring the
-#    dominant organism.
+# run-next-2: run a serial transfer experiment, always transferring N
+#    random organisms
+
+N = 10
+
+assert N >= 1, "invalid N! must be positive."
+
+###
 
 import sys
 import os, glob
 import shutil
 import subprocess
+import random
 
 # retrieve parent directory from command line
 parent_dir = sys.argv[1]
@@ -39,7 +46,7 @@ template_dir = os.path.join(parent_dir, 'run.template')
 shutil.copytree(template_dir, new_run_dir)
 
 #
-# retrieve dominant organism from the last run
+# use 'dominant.dat' to figure out what the last update was.
 #
 
 last_run_data = os.path.join(parent_dir, last_run_dir, 'data')
@@ -55,26 +62,37 @@ for line in fp:
 last_line = last_line.split()
 
 last_update = last_line[0]
-dominant_genotype = last_line[-2]
 
-### now get the actual genome from the 'detail-' file:
+### now get the actual genomes from the 'detail-' file:
 
 population_file = 'detail-' + last_update + '.spop'
 population_file = os.path.join(last_run_data, population_file)
 
+all_organisms = []
+
 fp = open(population_file)
 for line in fp:
     line = line.strip()
-    if not line:
+    if not line or line.startswith('#'):
         continue
 
-    organism = line.split()[0]
-    if organism == dominant_genotype:
-        genome = line.split()[15]
-        break
+    line = line.split(' ')
+    organism = line[0]
+    genome = line[16]
+    all_organisms.append((organism, genome))
+
+# choose N, randomly.
+transfer_pop = random.sample(all_organisms, N)
+
+# ok, now we have to do two things: first, we have to stick in the *starting*
+# organism, which we'll make the first of the critters we selected.  All others
+# will be inserted using 'InjectSequence'.
+
+# get first organism.
+(org_id, first_genome) = transfer_pop[0]
+print transfer_pop[0]
 
 # OK!  now translate.
-
 instset_filename = os.path.join(new_run_dir, 'instset-heads.cfg')
 instructions = open(instset_filename)
 
@@ -99,11 +117,12 @@ for line in instructions:
 
 ##
 
-org_name = 'run.%d-dominant.org' % last_run
+org_name = 'run.%d-first.org' % last_run
 org_filename = os.path.join(new_run_dir, org_name)
 orgfp = open(org_filename, 'w')
 
-for ch in genome:
+print >>orgfp, "# organism %s from run %d" % (org_id, last_run)
+for ch in first_genome:
     print >>orgfp, char_to_inst[ch]
 orgfp.close()
 
@@ -120,6 +139,16 @@ for line in open(old_cfg):
     else:
         outfp.write(line)
 outfp.close()
+
+###
+
+# now, also modify the events file to inject the remaining critters
+eventsfp = open('events.cfg', 'a')
+
+print >>eventsfp, "\n# injecting as part of serial transfer:"
+for (org_id, genome) in transfer_pop[1:]:
+    print >>eventsfp, "u 0 InjectSequence %s  # organism %s from run %d" % \
+        (genome, org_id, last_run)
 
 ###
 
