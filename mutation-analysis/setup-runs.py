@@ -37,6 +37,10 @@ def decode(s, instruction_filename):
 genomestr = sys.argv[1]
 instructionset = 'run.template/instset-heads.cfg'
 
+# first, set up a run with an unmutated org
+shutil.copytree('run.template', 'run.orig')
+
+# next, set up runs, one run for each mutated position
 for n in range(len(genomestr)):
     mutated_genome = ""
     for m in range(len(genomestr)):
