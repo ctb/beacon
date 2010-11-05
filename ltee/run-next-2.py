@@ -1,7 +1,8 @@
 # run-next-2: run a serial transfer experiment, always transferring N
-#    random organisms
+#    random organisms, M times each (so total of NxM organisms injected)
 
-N = 10
+N = 10                          # number of source organisms to copy
+M = 1                           # number of copies of EACH to inject
 
 assert N >= 1, "invalid N! must be positive."
 
@@ -147,8 +148,9 @@ eventsfp = open('events.cfg', 'a')
 
 print >>eventsfp, "\n# injecting as part of serial transfer:"
 for (org_id, genome) in transfer_pop[1:]:
-    print >>eventsfp, "u 0 InjectSequence %s  # organism %s from run %d" % \
-        (genome, org_id, last_run)
+    for i in range(M):
+        print >>eventsfp, "u 0 InjectSequence %s  # organism %s from run %d" % \
+            (genome, org_id, last_run)
 
 ###
 
